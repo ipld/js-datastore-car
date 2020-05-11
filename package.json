@@ -33,12 +33,12 @@
     "bl": "^4.0.2",
     "garbage": "0.0.0",
     "hundreds": "0.0.2",
-    "mocha": "^7.1.1"
+    "mocha": "^7.1.2"
   },
   "dependencies": {
-    "@ipld/block": "^4.0.0",
+    "@ipld/block": "^4.0.2",
     "cids": "^0.8.0",
-    "interface-datastore": "^0.8.3",
+    "interface-datastore": "^1.0.2",
     "multicodec": "^1.0.1",
     "varint": "^5.0.0"
   }
