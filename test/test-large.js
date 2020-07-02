@@ -1,6 +1,6 @@
 /* eslint-env mocha */
 
-const assert = require('assert')
+const { assert } = require('chai')
 const fs = require('fs')
 const unlink = require('util').promisify(require('fs').unlink)
 const garbage = require('garbage')

@@ -1,6 +1,8 @@
 /* eslint-env mocha */
 
-const assert = require('assert')
+const chai = require('chai')
+chai.use(require('chai-as-promised'))
+const { assert } = chai
 const { promisify } = require('util')
 const fs = require('fs')
 const bl = require('bl')
@@ -61,12 +63,12 @@ describe('Encode', () => {
   })
 
   it('encode errors', async () => {
-    await assert.rejects(coding.encodeBuffer(['blip'], allBlocks), {
+    await assert.isRejected(coding.encodeBuffer(['blip'], allBlocks), {
       name: 'TypeError',
       message: 'Roots must be CIDs'
     })
 
-    await assert.rejects(coding.encodeBuffer(roots, ['blip']), {
+    await assert.isRejected(coding.encodeBuffer(roots, ['blip']), {
       name: 'TypeError',
       message: 'Block list must contain @ipld/block objects'
     })

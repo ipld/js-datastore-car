@@ -1,7 +1,9 @@
 /* eslint-env mocha */
 
+const chai = require('chai')
+chai.use(require('chai-as-promised'))
+const { assert } = chai
 const path = require('path')
-const assert = require('assert')
 const { readFileComplete } = require('../car')
 const { acid, makeData, verifyBlocks, verifyHas, verifyRoots } = require('./fixture-data')
 
@@ -18,7 +20,7 @@ describe('Read File', () => {
     await verifyHas(carDs)
     await verifyBlocks(carDs)
     await verifyRoots(carDs)
-    await assert.rejects(carDs.get(await rawBlocks[3].cid())) // doesn't exist
+    await assert.isRejected(carDs.get(await rawBlocks[3].cid())) // doesn't exist
     await carDs.close()
   })
 
@@ -32,9 +34,9 @@ describe('Read File', () => {
   // when we instantiate from a File, CarDatastore should be immutable
   it('immutable', async () => {
     const carDs = await readFileComplete(path.join(__dirname, 'go.car'))
-    await assert.rejects(carDs.put(acid, Buffer.from('blip')))
-    await assert.rejects(carDs.delete(acid, Buffer.from('blip')))
-    await assert.rejects(carDs.setRoots(acid))
-    await assert.rejects(carDs.setRoots([acid]))
+    await assert.isRejected(carDs.put(acid, Buffer.from('blip')))
+    await assert.isRejected(carDs.delete(acid, Buffer.from('blip')))
+    await assert.isRejected(carDs.setRoots(acid))
+    await assert.isRejected(carDs.setRoots([acid]))
   })
 })

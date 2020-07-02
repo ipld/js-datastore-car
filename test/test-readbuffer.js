@@ -1,20 +1,10 @@
 /* eslint-env mocha */
 
-const assert = require('assert')
+const chai = require('chai')
+chai.use(require('chai-as-promised'))
+const { assert } = chai
 const { readBuffer } = require('../')
 const { acid, car, makeData, verifyBlocks, verifyHas, verifyRoots } = require('./fixture-data')
-
-if (!assert.rejects) {
-  // browser polyfill is incomplete
-  assert.rejects = async (promise, msg) => {
-    try {
-      await promise
-    } catch (err) {
-      return
-    }
-    assert.fail(`Promise did not reject: ${msg}`)
-  }
-}
 
 let rawBlocks
 
@@ -29,7 +19,7 @@ describe('Read Buffer', () => {
     await verifyHas(carDs)
     await verifyBlocks(carDs)
     await verifyRoots(carDs)
-    await assert.rejects(carDs.get(await rawBlocks[3].cid())) // doesn't exist
+    await assert.isRejected(carDs.get(await rawBlocks[3].cid())) // doesn't exist
     await carDs.close()
   })
 
@@ -43,9 +33,9 @@ describe('Read Buffer', () => {
   // when we instantiate from a Buffer, CarDatastore should be immutable
   it('immutable', async () => {
     const carDs = await readBuffer(car)
-    await assert.rejects(carDs.put(acid, Buffer.from('blip')))
-    await assert.rejects(carDs.delete(acid, Buffer.from('blip')))
-    await assert.rejects(carDs.setRoots(acid))
-    await assert.rejects(carDs.setRoots([acid]))
+    await assert.isRejected(carDs.put(acid, Buffer.from('blip')))
+    await assert.isRejected(carDs.delete(acid, Buffer.from('blip')))
+    await assert.isRejected(carDs.setRoots(acid))
+    await assert.isRejected(carDs.setRoots([acid]))
   })
 })

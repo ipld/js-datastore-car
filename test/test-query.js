@@ -1,21 +1,9 @@
 /* eslint-env mocha */
 
-const assert = require('assert')
+const { assert } = require('chai')
 const path = require('path')
 const { readBuffer, readFile } = require('../')
 const { car, makeData, compareBlockData } = require('./fixture-data')
-
-if (!assert.rejects) {
-  // browser polyfill is incomplete
-  assert.rejects = async (promise, msg) => {
-    try {
-      await promise
-    } catch (err) {
-      return
-    }
-    assert.fail(`Promise did not reject: ${msg}`)
-  }
-}
 
 const factories = [['readBuffer', () => readBuffer(car)]]
 if (readFile) { // not in browser

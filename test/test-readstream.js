@@ -1,8 +1,10 @@
 /* eslint-env mocha */
 
+const chai = require('chai')
+chai.use(require('chai-as-promised'))
+const { assert } = chai
 const fs = require('fs')
 const path = require('path')
-const assert = require('assert')
 const { readStreaming } = require('../car')
 const { acid, makeData, compareBlockData, verifyRoots } = require('./fixture-data')
 
@@ -75,13 +77,13 @@ describe('Read Stream', () => {
 
   it('errors & immutability', async () => {
     const carDs = await readStreaming(fs.createReadStream(path.join(__dirname, 'go.car')))
-    await assert.rejects(carDs.has(await allBlocks[0].cid()))
-    await assert.rejects(carDs.get(await allBlocks[0].cid()))
+    await assert.isRejected(carDs.has(await allBlocks[0].cid()))
+    await assert.isRejected(carDs.get(await allBlocks[0].cid()))
 
     // when we instantiate from a Stream, CarDatastore should be immutable
-    await assert.rejects(carDs.put(acid, Buffer.from('blip')))
-    await assert.rejects(carDs.delete(acid, Buffer.from('blip')))
-    await assert.rejects(carDs.setRoots(acid))
-    await assert.rejects(carDs.setRoots([acid]))
+    await assert.isRejected(carDs.put(acid, Buffer.from('blip')))
+    await assert.isRejected(carDs.delete(acid, Buffer.from('blip')))
+    await assert.isRejected(carDs.setRoots(acid))
+    await assert.isRejected(carDs.setRoots([acid]))
   })
 })

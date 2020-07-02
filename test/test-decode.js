@@ -1,6 +1,8 @@
 /* eslint-env mocha */
 
-const assert = require('assert')
+const chai = require('chai')
+chai.use(require('chai-as-promised'))
+const { assert } = chai
 const { promisify } = require('util')
 const path = require('path')
 const fs = require('fs')
@@ -32,7 +34,7 @@ describe('Decode', () => {
   it('decode errors', async () => {
     const buf = await fs.readFile(path.join(__dirname, 'go.car'))
     // truncated
-    await assert.rejects(coding.decodeBuffer(buf.slice(0, buf.length - 10)), {
+    await assert.isRejected(coding.decodeBuffer(buf.slice(0, buf.length - 10)), {
       name: 'Error',
       message: 'Unexpected end of Buffer'
     })
@@ -41,7 +43,7 @@ describe('Decode', () => {
     const buf2 = Buffer.alloc(buf.length)
     buf.copy(buf2)
     buf2[101] = 0 // first block's CID
-    await assert.rejects(coding.decodeBuffer(buf2), {
+    await assert.isRejected(coding.decodeBuffer(buf2), {
       name: 'Error',
       message: 'Unexpected CID version (0)'
     })

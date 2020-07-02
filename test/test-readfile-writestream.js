@@ -1,6 +1,8 @@
 /* eslint-env mocha */
 
-const assert = require('assert')
+const chai = require('chai')
+chai.use(require('chai-as-promised'))
+const { assert } = chai
 const fs = require('fs')
 const unlink = require('util').promisify(require('fs').unlink)
 const { writeStream, readFileComplete } = require('../')
@@ -64,9 +66,9 @@ describe('Read File & Write Stream', () => {
   it('writeStream errors', async () => {
     const carDs = await writeStream(fs.createWriteStream('./test.car'))
     await carDs.put(await cborBlocks[0].cid(), await cborBlocks[0].encode())
-    await assert.rejects(carDs.delete(await cborBlocks[0].cid()))
+    await assert.isRejected(carDs.delete(await cborBlocks[0].cid()))
     await carDs.close()
-    await assert.rejects(carDs.close())
+    await assert.isRejected(carDs.close())
   })
 
   after(async () => {

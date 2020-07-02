@@ -1,6 +1,8 @@
 /* eslint-env mocha */
 
-const assert = require('assert')
+const chai = require('chai')
+chai.use(require('chai-as-promised'))
+const { assert } = chai
 const { promisify } = require('util')
 const path = require('path')
 const fs = require('fs')
@@ -83,12 +85,12 @@ describe('Raw', () => {
   })
 
   it('errors', async () => {
-    await assert.rejects(indexer(), {
+    await assert.isRejected(indexer(), {
       name: 'TypeError',
       message: 'indexer() requires a file path or a ReadableStream'
     })
 
-    await assert.rejects(readRaw(true, expectedIndex[0]), {
+    await assert.isRejected(readRaw(true, expectedIndex[0]), {
       name: 'TypeError',
       message: 'Bad fd'
     })
@@ -96,7 +98,7 @@ describe('Raw', () => {
     const badBlock = Object.assign({}, expectedIndex[expectedIndex.length - 1])
     badBlock.length += 10
     const fd = await fs.open(path.join(__dirname, 'go.car'))
-    await assert.rejects(readRaw(fd, badBlock), {
+    await assert.isRejected(readRaw(fd, badBlock), {
       name: 'Error',
       message: `Failed to read entire block (${badBlock.length - 10} instead of ${badBlock.length})`
     })
